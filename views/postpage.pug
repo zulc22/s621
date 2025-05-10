@@ -1,0 +1,16 @@
+extends basepage
+
+block body
+    +topbar
+    script.
+        if (is3DS()) window.scroll(0,27)
+    if useFile
+        img.postview(src=post.file.url)
+    else
+        img.postview(src=post.sample.url)
+    center
+        = `Post ID: #${post.id}`
+    - if (post.description)
+        .lightcard
+            h3 Description
+            p=post.description

@@ -1,0 +1,48 @@
+extends basepage.pug
+
+block body
+    #esix
+    div(style="position:relative; top:240px;")
+        .card
+            a(href="/static/ieworkshop.html") <debug>
+            a(href="/")
+                h1 #{projectName}
+            //- #links
+            //-     a(href="/posts") Posts
+                //- a(href="/comments") Comments
+                //- a(href="/tags") Tags
+                //- a(href="/wiki") Wiki
+                //- a(href="/forum") Forum
+                //- a(href="/more") »
+            form(action="/posts" method="get")
+                input(type="text" name="tags" size=30 value="")
+                br
+                input(type="submit" value="Search")
+                input(type="button" value="Change Mascot" onclick="changeBG()")
+            div
+                | Mascot by #[a#mascot_artist ...]
+        .card
+            - for (const digit of postCount.toString())
+                img(alt=digit src="/static/counter/"+digit+".png" height=75)
+        .card(style="font-size: 80%")
+            p Relaying #{postCount} posts
+            +disclaimer
+        div
+    script(src="/static/mascot/mascots.js")
+    script.
+        if (is3DS()) {
+            window.scroll(0,240)
+            if (!str_matches_any(location.host, [
+                /\.com$/, // todo: find the real whitelist
+                /\.net$/,
+                /\.org$/
+            ])) {
+                var errorcard = $('<div class="card error" style="position:absolute;top:0px"></div>')
+                $("body").append(errorcard.html(
+                    "Warning: Cookies do not work on the 3DS browser outside of whitelisted TLDs.<br>"+
+                    "I reccommend making a DNS server to redirect a .net, .com, or .org domain to this page."
+                ))
+                window.scroll(0,200)
+            }
+        }
+        mascot_init()

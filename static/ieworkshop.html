@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta name="viewport" content="width=320">
+	<style> body,html {margin:0;font-family:monospace;} </style>
+	<title>IE Workshop</title>
+</head>
+<body>
+<script src="/static/jquery-1.12.4.js"></script>
+
+<div id="output"></div>
+<span>>> </span>
+<input type="text" id="codebox" value="" style="font-family:monospace">
+<input type="button" value="Execute" id="execute">
+<div id="playbox"></div>
+
+<script>
+	function id(s) { return document.getElementById(s) }
+	function pre(s) {return "<xmp>"+s+"</xmp>"}
+	function style(e,s,v) {e.style[s] = v}
+	execute.onclick = function() {
+		codebox.focus()
+		output.innerHTML += pre(">> "+codebox.value)
+		if (codebox.value==="cls") {
+			output.innerHTML = ""
+			return
+		}
+		try {var out = eval(codebox.value)}
+		catch(e) {
+			output.innerHTML += "<font color=red>"+
+				pre(e.description)+
+			"</font>"
+			return
+		}
+		output.innerHTML += pre("Type: "+(typeof out)+"\nValue: "+out)
+		scrollTo(0,document.body.scrollHeight)
+	}
+	codebox.onkeyup = function() {
+		codebox.size = codebox.value.length + 2
+	}
+	codebox.onkeydown = codebox.onkeyup
+	function darkmode() {
+		document.body.style.backgroundColor = 'black'
+		document.body.style.color = 'gray'
+		document.body.style.fontWeight = 'bold'
+		codebox.style.backgroundColor = 'black'
+		codebox.style.color = 'white'
+		codebox.style.borderStyle = 'none'
+	}
+	function lightmode() {
+		document.body.style.backgroundColor = ''
+		document.body.style.color = ''
+		document.body.style.fontWeight = ''
+		codebox.style.backgroundColor = ''
+		codebox.style.color = ''
+		codebox.style.borderStyle = ''
+	}
+	function escapeHTML(unsafe) {
+		return unsafe
+			.replace(/&/g,"&amp;")
+			.replace(/</g,"&lt;")
+			.replace(/>/g,"gt;")
+			.replace(/"/g,"&quot;")
+			.replace(/'/g,"&#039;");
+	}
+	codebox.focus()
+</script>
+
+</body>
+</html>

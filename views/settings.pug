@@ -1,0 +1,66 @@
+extends basepage
+
+mixin boolsetting(n,desc)
+    p(id="setting_"+n)
+        if appsettings[n] === "true"
+            input(type="checkbox", name=n, checked="true")
+        else
+            input(type="checkbox", name=n)
+        label(for=n) #{desc}
+
+block body
+    +topbar
+    if check_cookies
+        #ccstatus
+            | Checking functionality of cookies #[img.emote(src="/static/famfamfam-silk/bullet_white_elipses.png")]
+    #settings
+        p Settings are stored in your browser as cookies. The settings may reset themselves due to this.
+        +boolsetting("postpage_gif_resize","Intercept GIFs to resize to 320px (<320px not touched)")
+        +boolsetting("postpage_image_resize","Intercept images to resize to 320px (<320px not touched)")
+        +boolsetting("proxy_images","Proxy images through s621 server instead of using direct links to the e621 CDN")
+    script.
+        $("#settings").children().each(function() {
+            var t = $(this).children('input[type=checkbox]')
+            t.click(function() {
+                t.prop('disabled', true)
+                var checked = t.is(":checked")
+                t.parent().append('<img class="emote" src="/static/famfamfam-silk/bullet_white_elipses.png">')
+                var loadythingy = t.parent().children('img')
+                var settings_form = {}
+                settings_form[t.attr('name')] = checked
+                $.post('/cookie/setting', settings_form)
+                .done(function() {
+                    loadythingy.attr("src", "/static/famfamfam-silk/tick.png")
+                })
+                .fail(function(xhr) {
+                    loadythingy.attr("src", "/static/famfamfam-silk/exclamation.png")
+                    if (xhr.responseText)
+                        alert("Failed to set preference: \""+xhr.responseText+"\" (response from server)")
+                })
+                .always(function() {
+                    setTimeout(function() {
+                        loadythingy.fadeOut(400, function() {
+                            loadythingy.remove()
+                        })
+                    }, 1000)
+                    t.prop('disabled', false)
+                })
+            })
+        })
+    if check_cookies
+        script.
+            $("#settings").hide()
+            cookies_test(function(success) {
+                if (success) {
+                    $("#ccstatus").hide()
+                    $("#settings").show()
+                } else {
+                    $("#ccstatus").hide()
+                    var errorcard = $('<div class="card error"></div>')
+                    $("body").append(errorcard.html(
+                        "Cookies are not functional, and thus settings can not be set.<br>"+
+                        "This may be because cookies do not work on the 3DS browser outside of whitelisted TLDs.<br>"+
+                        "I reccommend using a custom DNS server to redirect a .net, .com, or .org domain to this page."
+                    ))
+                }
+            })

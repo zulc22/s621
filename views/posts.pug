@@ -1,0 +1,60 @@
+extends basepage
+
+mixin pagenav
+    center
+        if page > 1
+            form(action="/posts" method="get" style="display:inline")
+                input(type="hidden" name="tags" value=tags)
+                input(type="hidden" name="page" value=page-1)
+                input(type="submit" value="<<")
+        else
+            button(disabled) <<
+        span(style="font-size: 150%") &nbsp;page #{page}&nbsp;
+        form(action="/posts" method="get" style="display:inline")
+            input(type="hidden" name="tags" value=tags)
+            input(type="hidden" name="page" value=page+1)
+            input(type="submit" value=">>")
+
+block body
+    a(name="top")
+    +topbar
+    form(action="/posts" method="get" style="text-align:center")
+        input(type="text" name="tags" size=32 value=tags)
+        input(type="submit" value="Search")
+    +pagenav
+    div.posts
+        each post in posts
+            a(href=`/posts/${post.id}`)
+                .post
+                    img.preview(src=(((settings.proxy_images==="true"&&post.preview.url) ? "/proxy/prev/"+post.id : post.preview.url) || "/static/nopreview.png"))
+                    span.score
+                        if post.score.total < 0
+                            span.s ↓#{post.score.total}
+                        if post.score.total == 0
+                            span.s ↕0
+                        if post.score.total > 0
+                            span.s.greentext ↑#{post.score.total}
+                        span.faves ♥#{post.fav_count}
+                        span.comments C#{post.comment_count}
+                        if post.rating == "s"
+                            span.rating.greentext S
+                        if post.rating == "q"
+                            span.rating.yellowtext Q
+                        if post.rating == "e"
+                            span.rating.redtext E
+                        if post.file.url
+                            - var format = "." + post.file.url.split(".").pop()
+                            case format
+                                when ".gif"
+                                    span.format.greentext=format
+                                when ".webm"
+                                    span.format.redtext=format
+                                when ".mp4"
+                                    span.format.redtext=format
+                                when ".swf"
+                                    span.format.redtext=format
+                                default
+                                    span.format=format
+    +pagenav
+    center
+        a(href="#top") Scroll to top
