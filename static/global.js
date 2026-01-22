@@ -16,6 +16,16 @@ function isDSi() {
     return window.navigator.userAgent.indexOf("Nintendo DSi") > -1
 }
 
+function dualScreenScrolling() {
+    return isNDSBrowser() || isDSi() || is3DS()
+}
+
+function screen_height() {
+    if (isNDSBrowser() || isDSi()) return 192;
+    if (window.screen) return window.screen.height;
+    return $(window).height();
+}
+
 if (typeof $ === 'undefined') {
     if (!isNDSBrowser())
         alert("jQuery is not accessible!")

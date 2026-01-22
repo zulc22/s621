@@ -78,7 +78,9 @@ const filesize = require('file-size')
 const sharp = require('sharp')
 app.get('/resized/:id.gif', async (req, res) => {
     var settings = app_settings(req)
-    var key = `resized_${req.params.id}.gif`
+    var display_width = parseInt(settings.display_width)
+    if (!display_width || isNaN(display_width)) display_width = 320
+    var key = `resized_w${display_width}_${req.params.id}.gif`
     if (myCache.get(key)) {
         res.type("gif")
         res.header("Cache-Control", "max-age=604800")
@@ -109,8 +111,6 @@ app.get('/resized/:id.gif', async (req, res) => {
         )
     }
     var file = await filereq.bytes()
-    var display_width = parseInt(settings.display_width)
-    if (!display_width || isNaN(display_width)) display_width = 320
     console.log("Download finished. Resizing...")
     var outbuf = await sharp(file, { animated: true, limitInputPixels: false })
         .resize(display_width, null, { kernel: "linear" })
@@ -123,7 +123,10 @@ app.get('/resized/:id.gif', async (req, res) => {
 })
 
 app.get('/resized/:id.png', async (req, res) => {
-    var key = `resized_${req.params.id}.png`
+    var settings = app_settings(req)
+    var display_width = parseInt(settings.display_width)
+    if (!display_width || isNaN(display_width)) display_width = 320
+    var key = `resized_w${display_width}_${req.params.id}.png`
     if (myCache.get(key)) {
         res.type("png")
         res.header("Cache-Control", "max-age=604800")
@@ -145,9 +148,6 @@ app.get('/resized/:id.png', async (req, res) => {
         )
     }
     var file = await filereq.bytes()
-    var settings = app_settings(req)
-    var display_width = parseInt(settings.display_width)
-    if (!display_width || isNaN(display_width)) display_width = 320
     console.log("Download finished. Resizing...")
     var outbuf = await sharp(file, { limitInputPixels: false })
         .resize(display_width, null)
@@ -250,10 +250,10 @@ app.get('/cookie/test', (req, res) => {
 })
 
 const app_settings_default = {
-    proxy_images: "false",
+    proxy_images: "true",
     postpage_gif_resize: "true",
-    postpage_image_resize: "false",
-    results_image_resize: "false",
+    postpage_image_resize: "true",
+    results_image_resize: "true",
     display_width: "ignore"
 }
 function strAsBool(s) {
@@ -264,6 +264,7 @@ function strAsBool(s) {
 function app_settings(req) {
     var settings = {}
     var ua = req.headers['user-agent']
+    settings.dual_screen_scroll_mode = "false"
     settings.platform = "normal"
     settings.nojquery = "false"
     if (ua) {

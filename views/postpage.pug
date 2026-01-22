@@ -2,15 +2,48 @@ extends basepage
 
 block body
     +topbar
-    script.
-        if (is3DS()) window.scroll(0,27)
     if useFile
-        img.postview(src=post.file.url)
+        img#postview(src=post.file.url)
     else
-        img.postview(src=post.sample.url)
+        img#postview(src=post.sample.url)
     center
         = `Post ID: #${post.id}`
     - if (post.description)
         .lightcard
             h3 Description
             p=post.description
+
+    script.
+        if (dualScreenScrolling()) {
+            var f = function() {
+                if (postview.getBoundingClientRect) {
+                    var r = postview.getBoundingClientRect();
+                    // default, images shorter than screen
+                    // put the top of them on the bottom screen
+                    var scrollto = r.top;
+                    var sh = screen_height();
+                    var wiggle_room = 100;
+                    if (!r.height) r.height = r.bottom - r.top
+                    // images taller than the screen
+                    // put them in the center of both displays
+                    if (r.height > sh) {
+                        scrollto = r.top + (r.height/2)
+                    }
+                    // images only slightly taller than the screen
+                    // center on bottom screen
+                    if (r.height < sh + wiggle_room) {
+                        scrollto = r.top + (r.height/2) - (sh/2)
+                    }
+                    // comics- way bigger than the screen so just put the
+                    // top of the image on the top screen
+                    if (r.height > (sh*2) + wiggle_room) {
+                        scrollto = r.top + screen_height()
+                    }
+                    window.scrollTo(0,scrollto)
+                    return
+                }
+                alert("Unable to scroll view")
+            };
+            postview.onload = f;
+            postview.onclick = f;
+        }

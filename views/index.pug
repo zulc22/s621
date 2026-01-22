@@ -3,7 +3,7 @@ extends basepage.pug
 block body
     #esix
     div.indexmain
-        .card
+        .card.first
             a(href="/")
                 h1 #{projectName}
             //- #links
@@ -31,11 +31,12 @@ block body
         div
     script(src="/static/mascot/mascots.js")
     script.
-        if (isDSi()) {
-            window.scroll(0,192)
+        if (isDSi() || is3DS()) {
+            alert(screen_height())
+            window.scroll(0,screen_height())
+            $(".card.first").scrollTop()
         }
         if (is3DS()) {
-            window.scroll(0,240)
             if (!str_matches_any(location.host, [
                 /\.com$/, // todo: find the real whitelist
                 /\.net$/,
