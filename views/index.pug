@@ -2,26 +2,27 @@ extends basepage.pug
 
 block body
     #esix
-    div(style="position:relative; top:240px;")
+    div.indexmain
         .card
-            a(href="/static/ieworkshop.html") <debug>
             a(href="/")
                 h1 #{projectName}
             //- #links
             //-     a(href="/posts") Posts
-                //- a(href="/comments") Comments
-                //- a(href="/tags") Tags
-                //- a(href="/wiki") Wiki
-                //- a(href="/forum") Forum
-                //- a(href="/more") »
+            //- a(href="/comments") Comments
+            //- a(href="/tags") Tags
+            //- a(href="/wiki") Wiki
+            //- a(href="/forum") Forum
+            //- a(href="/more") »
             form(action="/posts" method="get")
-                input(type="text" name="tags" size=30 value="")
+                input(type="text" name="tags" size=25 value="")
                 br
                 input(type="submit" value="Search")
                 input(type="button" value="Change Mascot" onclick="changeBG()")
             div
                 | Mascot by #[a#mascot_artist ...]
-        .card
+            br
+            a(href="/static/ieworkshop.html") Debug Console
+        .card.postcount
             - for (const digit of postCount.toString())
                 img(alt=digit src="/static/counter/"+digit+".png" height=75)
         .card(style="font-size: 80%")
@@ -30,6 +31,9 @@ block body
         div
     script(src="/static/mascot/mascots.js")
     script.
+        if (isDSi()) {
+            window.scroll(0,192)
+        }
         if (is3DS()) {
             window.scroll(0,240)
             if (!str_matches_any(location.host, [

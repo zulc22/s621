@@ -3,22 +3,40 @@ body {
     color: white;
     font-size: 11px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    max-width: 320px; margin: auto;
+    width: 100%;
+    max-width: 320px;
+    margin: auto;
 }
 
-a:hover { color: #2e76b4; text-decoration: none; }
-a:visited { color: #b4c7d9; text-decoration: none; }
-a:link { color: #b4c7d9; text-decoration: none; }
-a.invalid { color: red }
+a:hover {
+    color: #2e76b4;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #b4c7d9;
+    text-decoration: none;
+}
+
+a:link {
+    color: #b4c7d9;
+    text-decoration: none;
+}
+
+a.invalid {
+    color: red
+}
 
 .greentext {
     color: #3e9e49 !important;
     font-weight: bold;
 }
+
 .yellowtext {
     color: #e4e150 !important;
     font-weight: bold;
 }
+
 .redtext {
     color: #e45f5f !important;
     font-weight: bold;
@@ -26,6 +44,7 @@ a.invalid { color: red }
 
 .card {
     text-align: center;
+    background-color: #0d477a;
     background-color: rgba(13, 71, 122, 0.76);
     border-radius: 10px;
     margin: 8px;
@@ -36,17 +55,25 @@ a.invalid { color: red }
     background-color: rgba(122, 13, 13, 0.76);
 }
 
-.card #links a, #topbar a:not(.logo) {
+.card #links a,
+#topbar a:not(.logo) {
     white-space: nowrap;
     padding: 0px 4px;
 }
-.card #links { white-space: wrap; }
-h1 {margin: 0}
+
+.card #links {
+    white-space: wrap;
+}
+
+h1 {
+    margin: 0
+}
 
 #esix {
     z-index: -1;
     position: absolute;
-    top: 0px; height: 400px;
+    top: 0px;
+    height: 400px;
     width: 100%;
     /* background: url(/static/esix.jpg) no-repeat; */
     background-repeat: no-repeat;
@@ -60,6 +87,7 @@ h1 {margin: 0}
     padding: 4px;
     text-align: right;
 }
+
 #topbar a:not(.logo) {
     position: relative;
     top: 2px;
@@ -92,10 +120,12 @@ img.postview {
     position: relative;
     margin: 4px;
 }
+
 .post img {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
+
 .post .score {
     position: static;
     width: 100%;
@@ -110,6 +140,7 @@ img.postview {
     background-color: #284a81;
     min-width: 80px;
 }
+
 .post .score span {
     margin: 0 2px;
 }
@@ -117,7 +148,8 @@ img.postview {
 .emote {
     position: relative;
     top: 4px;
-    display: inline; vertical-align: baseline;
+    display: inline;
+    vertical-align: baseline;
 }
 
 .lightcard {
@@ -126,4 +158,9 @@ img.postview {
     border-radius: 10px;
     margin: 8px;
     padding: 4px;
+}
+
+.indexmain {
+    position: relative;
+    top: 240px;
 }

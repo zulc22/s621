@@ -8,8 +8,17 @@
 //     return true
 // }
 
+function isNDSBrowser() {
+    return window.navigator.userAgent.indexOf("Nitro") > -1
+}
+
+function isDSi() {
+    return window.navigator.userAgent.indexOf("Nintendo DSi") > -1
+}
+
 if (typeof $ === 'undefined') {
-    alert("jQuery is not accessible!")
+    if (!isNDSBrowser())
+        alert("jQuery is not accessible!")
 }
 
 function is3DS() {
@@ -21,7 +30,7 @@ function is3DS() {
 
 function bool_any(a) {
     var o = false
-    a.forEach(function(b) {
+    a.forEach(function (b) {
         o = o || b
     })
     return o
@@ -29,17 +38,17 @@ function bool_any(a) {
 
 function str_matches_any(s, rs) {
     var o = false
-    rs.forEach(function(r) {
+    rs.forEach(function (r) {
         o = o || s.match(r)
     })
     return o
 }
 
 function cookies_test(callback) {
-    $.post("/cookie/test").always(function() {
-        $.get("/cookie/test", function() {
+    $.post("/cookie/test").always(function () {
+        $.get("/cookie/test", function () {
             callback(true)
-        }).fail(function() {
+        }).fail(function () {
             callback(false)
         })
     })

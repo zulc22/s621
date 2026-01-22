@@ -22,6 +22,25 @@ block body
         input(type="text" name="tags" size=32 value=tags)
         input(type="submit" value="Search")
     +pagenav
+
+    - var neg_score_symbol = "↓"
+    - var zero_score_symbol = "↕"
+    - var pos_score_symbol = "↑"
+    - var fav_symbol = "♥"
+    - var comment_symbol = "C"
+
+    if settings.platform == "dsi" || settings.platform == "nds"
+        - zero_score_symbol = "="
+
+    if settings.platform == "dsi"
+        - pos_score_symbol = "\u{e01b}" // up arrow
+        - neg_score_symbol = "\u{e01c}" // down arrow
+        - fav_symbol = "\u{e017}" // hearts
+        - comment_symbol = "\u{e012}" // mail/letter
+
+    if settings.platform == "nds"
+        - fav_symbol = "F"
+
     div.posts
         each post in posts
             a(href=`/posts/${post.id}`)
@@ -29,13 +48,13 @@ block body
                     img.preview(src=(((settings.proxy_images==="true"&&post.preview.url) ? "/proxy/prev/"+post.id : post.preview.url) || "/static/nopreview.png"))
                     span.score
                         if post.score.total < 0
-                            span.s ↓#{post.score.total}
+                            span.s #{neg_score_symbol}#{post.score.total}
                         if post.score.total == 0
-                            span.s ↕0
+                            span.s #{zero_score_symbol}0
                         if post.score.total > 0
-                            span.s.greentext ↑#{post.score.total}
-                        span.faves ♥#{post.fav_count}
-                        span.comments C#{post.comment_count}
+                            span.s.greentext #{pos_score_symbol}#{post.score.total}
+                        span.faves #{fav_symbol}#{post.fav_count}
+                        span.comments #{comment_symbol}#{post.comment_count}
                         if post.rating == "s"
                             span.rating.greentext S
                         if post.rating == "q"

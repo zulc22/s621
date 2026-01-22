@@ -7,11 +7,17 @@ html
         title
             block title
                 = projectName
-        meta(name="viewport" content="width=320")
+        //- if settings.platform == "3ds"
+        //-     meta(name="viewport" content="width=320")
         link(rel="stylesheet" href="/static/styles.css")
+        if settings.platform == "dsi"
+            link(rel="stylesheet" href="/static/styles-dsi.css")
+        //- // NDS browser, general Opera Mini
+        //- link(rel="stylesheet" href="/static/styles.css" media="handheld")
+        meta(name="viewport" content="width=device-width")
         meta(charset="UTF-8")
         block head
-    body
+    body(width=320)
         script(src="/static/jquery-1.12.4.min.js")
         script(src="/static/global.js")
         block body

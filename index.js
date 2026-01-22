@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use('/static', express.static("static"))
 
 app.get('/', async (req, res) => {
-    res.render("index", { postCount: await esix_postCount() })
+    res.render("index", { postCount: await esix_postCount(), settings: app_settings(req) })
 })
 
 app.get('/favicon.ico', (req, res) => {
@@ -176,7 +176,9 @@ app.get('/proxy/img/:id', async (req, res) => {
 app.get('/proxy/prev/:id', async (req, res) => {
     var settings = app_settings(req)
     if (settings.results_image_resize === "true") {
-        var key = `resized_p${req.params.id}.jpg`
+        var display_width = parseInt(settings.display_width)
+        if (!display_width || isNaN(display_width)) display_width = 320
+        var key = `resized_p_w${display_width}_${req.params.id}.jpg`
         if (myCache.get(key)) {
             res.type("jpg")
             res.header("Cache-Control", "max-age=604800")
@@ -198,11 +200,9 @@ app.get('/proxy/prev/:id', async (req, res) => {
             )
         }
         var file = await filereq.bytes()
-        var display_width = parseInt(settings.display_width)
-        if (!display_width || isNaN(display_width)) display_width = 320
         console.log("Download finished. Resizing...")
         var outbuf = await sharp(file, { limitInputPixels: false })
-            .resize(display_width, null)
+            .resize(display_width * 0.4, null)
             .jpeg({ progressive: true, mozjpeg: true })
             .toBuffer()
         console.log("Resize finished")
@@ -263,28 +263,36 @@ function strAsBool(s) {
 
 function app_settings(req) {
     var settings = {}
+    var ua = req.headers['user-agent']
+    settings.platform = "normal"
+    settings.nojquery = "false"
+    if (ua) {
+        if (ua.includes("Nitro")) {
+            settings.platform = "nds"
+            settings.nojquery = "true"
+        }
+        if (ua.includes("Nintendo DSi")) {
+            settings.platform = "dsi"
+        }
+        if (ua.includes("Nintendo 3DS")) {
+            settings.platform = "3ds"
+        }
+    }
     for (const key in app_settings_default) {
         if (req.cookies[key] !== undefined) {
             settings[key] = req.cookies[key]
         } else {
             settings[key] = app_settings_default[key]
             // user agent default overrides
-            ua = req.headers['user-agent']
             if (ua) {
-                if (ua.includes("Nitro") && key == "proxy_images") {
-                    settings[key] = "true"
+                if (settings.platform === "nds" || settings.platform === "dsi") {
+                    if (key == "proxy_images") settings[key] = "true"
+                    if (key == "postpage_image_resize") settings[key] = "true"
+                    if (key == "display_width") settings[key] = "240"
+                    if (key == "results_image_resize") settings[key] = "true"
                 }
-                if (ua.includes("Nitro") && key == "postpage_image_resize") {
-                    settings[key] = "true"
-                }
-                if (ua.includes("Nitro") && key == "display_width") {
-                    settings[key] = "240"
-                }
-                if (ua.includes("Nintendo 3DS") && key == "display_width") {
-                    settings[key] = "320"
-                }
-                if (ua.includes("Nitro") && key == "results_image_resize") {
-                    settings[key] = "true"
+                if (settings.platform === "3ds") {
+                    if (key == "display_width") settings[key] = "320"
                 }
                 if (ua.includes("Opera 8.") && key == "proxy_images") {
                     settings[key] = "true"
@@ -300,7 +308,7 @@ app.get("/settings", (req, res) => {
     if (req.cookies.testcookie === "yeah") check_cookies = false
     res.render("settings", {
         check_cookies: check_cookies,
-        appsettings: app_settings(req)
+        settings: app_settings(req)
     })
 })
 
