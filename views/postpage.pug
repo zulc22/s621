@@ -42,7 +42,8 @@ block body
                     window.scrollTo(0,scrollto)
                     return
                 }
-                alert("Unable to scroll view")
+                if (!isNDSBrowser())
+                    alert("Unable to scroll view")
             };
             postview.onload = f;
             postview.onclick = f;

@@ -17,10 +17,12 @@ block body
                 input(type="text" name="tags" size=25 value="")
                 br
                 input(type="submit" value="Search")
-                input(type="button" value="Change Mascot" onclick="changeBG()")
-            div
-                | Mascot by #[a#mascot_artist ...]
-            br
+                if settings.nojquery == "false"
+                    input#chmascot(type="button" value="Change Mascot" onclick="changeBG()")
+            if settings.nojquery == "false"
+                div#mascotby
+                    | Mascot by #[a#mascot_artist ...]
+                br
             a(href="/static/ieworkshop.html") Debug Console
         .card.postcount
             - for (const digit of postCount.toString())
@@ -29,10 +31,10 @@ block body
             p Relaying #{postCount} posts
             +disclaimer
         div
-    script(src="/static/mascot/mascots.js")
+    if settings.nojquery == "false"
+        script(src="/static/mascot/mascots.js")
     script.
         if (isDSi() || is3DS()) {
-            alert(screen_height())
             window.scroll(0,screen_height())
             $(".card.first").scrollTop()
         }

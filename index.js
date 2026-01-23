@@ -71,7 +71,7 @@ app.get('/posts/:id', async (req, res) => {
             useFile = true
         }
     }
-    res.render("postpage", { ...data, useFile: useFile })
+    res.render("postpage", { settings: settings, ...data, useFile: useFile })
 })
 
 const filesize = require('file-size')
